@@ -1,22 +1,24 @@
-package resterr
+package rest_err
 
 import "net/http"
 
-type RestErr struct {
+type RestErr struct { // é uma estrutura que encapsula informações sobre um erro, como mensagem, código de erro, uma descrição do erro (Err), e causas específicas do erro.
 	Message string   `json:"message"`
 	Err     string   `json:"error"`
 	Code    int      `json:"code"`
 	Causes  []Causes `json:"causes"`
 }
 
-type Causes struct {
+type Causes struct { // é uma estrutura que representa uma causa específica de erro, indicando o campo (Field) e uma mensagem de erro associada.
 	Fiel    string `json:"field"`
 	Message string `json:"message"`
 }
 
-func (r *RestErr) Error() string {
+func (r *RestErr) Error() string { // o método Error() implementa a interface error e retorna a mensagem de erro, tornando possível usar instâncias de RestErr como objetos de erro padrão em Go.
 	return r.Message
 }
+
+// funções NewRestErr e funções construtoras específicas para criar instâncias de RestErr para diferentes tipos de erros comuns em serviços RESTful, como erros de requisição inválida
 
 func NewRestErr(message, err string, code int, causes []Causes) *RestErr {
 	return &RestErr{
@@ -27,7 +29,7 @@ func NewRestErr(message, err string, code int, causes []Causes) *RestErr {
 	}
 }
 
-func NewBadResquetError(message string) *RestErr {
+func NewBadResquetError(message string) *RestErr { // erros de validação de requisição inválida
 	return &RestErr{
 		Message: message,
 		Err:     "bad_request",
@@ -35,7 +37,7 @@ func NewBadResquetError(message string) *RestErr {
 	}
 }
 
-func NewBadResquetValidateError(message string, causes []Causes) *RestErr {
+func NewBadResquetValidateError(message string, causes []Causes) *RestErr { // // erros internos do servidor
 	return &RestErr{
 		Message: message,
 		Err:     "bad_request",
@@ -44,7 +46,7 @@ func NewBadResquetValidateError(message string, causes []Causes) *RestErr {
 	}
 }
 
-func NewInternalServerError(message string) *RestErr {
+func NewInternalServerError(message string) *RestErr { // erros internos do servidor
 	return &RestErr{
 		Message: message,
 		Err:     "internal server error",
@@ -52,7 +54,7 @@ func NewInternalServerError(message string) *RestErr {
 	}
 }
 
-func NewNotFoundError(message string) *RestErr {
+func NewNotFoundError(message string) *RestErr { // erros de acesso proibido
 	return &RestErr{
 		Message: message,
 		Err:     "not_found",
@@ -60,10 +62,12 @@ func NewNotFoundError(message string) *RestErr {
 	}
 }
 
-func NewForbiddenError(message string) *RestErr {
+func NewForbiddenError(message string) *RestErr { // erros de acesso proibido
 	return &RestErr{
 		Message: message,
 		Err:     "forbidden",
 		Code:    http.StatusForbidden,
 	}
 }
+
+// essas funções construtoras ajudam a criar instâncias de RestErr com valores padrão para facilitar a identificação e manipulação de erros em um serviço RESTful, fornecendo uma estrutura consistente para representar e comunicar informações sobre erros.
